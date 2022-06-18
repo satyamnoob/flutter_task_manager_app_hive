@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../models/task.dart';
 import '../widgets/task_widget.dart';
@@ -10,23 +11,22 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
-  List<Task> tasks = [
-    Task(
-      id: '0',
-      title: 'First Task',
-      createdOn: DateTime.now(),
-      // isDone: true,
-    ),
-    Task(
-      id: '1',
-      title: 'Second Task',
-      createdOn: DateTime.now(),
-      isDone: true,
-    ),
-  ];
-
+  // List<Task> tasks = [
+  //   Task(
+  //     id: '0',
+  //     title: 'First Task',
+  //     createdOn: DateTime.now(),
+  //     // isDone: true,
+  //   ),
+  //   Task(
+  //     id: '1',
+  //     title: 'Second Task',
+  //     createdOn: DateTime.now(),
+  //     isDone: true,
+  //   ),
+  // ];
+  Box box = Hive.box<Task>('tasks');
   @override
   Widget build(BuildContext context) {
     final titleController = TextEditingController();
@@ -73,11 +73,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               return;
                             }
                             setState(() {
-                              tasks.add(Task(
+                              // tasks.add(Task(
+                              //   id: DateTime.now().toString(),
+                              //   title: value,
+                              //   createdOn: DateTime.now(),
+                              // ));
+                              Task newTask = Task(
                                 id: DateTime.now().toString(),
                                 title: value,
-                                createdOn: DateTime.now(),
-                              ));
+                                createdOn: date,
+                              );
+                              box.put(newTask.id, newTask);
                             });
                           },
                         );
@@ -94,37 +100,42 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return Dismissible(
-            direction: DismissDirection.endToStart,
-            background: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  Icons.delete_outline,
-                  color: Colors.grey,
+      body: ValueListenableBuilder<Box<Task>>(
+        valueListenable: Hive.box<Task>('tasks').listenable(),
+        builder: (context, box, _) {
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              return Dismissible(
+                direction: DismissDirection.endToStart,
+                background: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.delete_outline,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      'Task is deleted!',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(
-                  'Task is deleted!',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                  ),
-                ),
-              ],
-            ),
-            key: UniqueKey(),
-            onDismissed: (direction) {
-              tasks.removeWhere((element) => element.id == tasks[index].id);
+                key: UniqueKey(),
+                onDismissed: (direction) {
+                  box.delete(box.getAt(index)!.id);
+                },
+                child: TaskWidget(task: box.getAt(index)),
+              );
             },
-            child: TaskWidget(task: tasks[index]),
+            itemCount: box.values.length,
           );
         },
-        itemCount: tasks.length,
       ),
     );
   }

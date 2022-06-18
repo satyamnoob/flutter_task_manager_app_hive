@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import './models/task.dart';
 import 'screens/home_screen.dart';
 
-void main() {
+late Box box;
+void main() async{
+  //initializing Hive
+  await Hive.initFlutter();
+  Hive.registerAdapter<Task>(TaskAdapter());
+  box = await Hive.openBox<Task>('tasks');
+  // Task newTask = Task(id: DateTime.now().toString(), title: 'Default Task', createdOn: DateTime.now());
+  // box.put(newTask.id, newTask);
   runApp(const MyApp());
 }
 
