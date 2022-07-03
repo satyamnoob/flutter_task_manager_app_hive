@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:task_manager_app_hive/screens/show_note_screen.dart';
 
 import './models/task.dart';
-import 'screens/home_screen.dart';
+import './screens/home_screen.dart';
+import './screens/new_note_screen.dart';
+import 'models/note.dart';
 
-late Box box;
+late Box boxTask;
+late Box boxNote;
 void main() async{
   //initializing Hive
   await Hive.initFlutter();
   Hive.registerAdapter<Task>(TaskAdapter());
-  box = await Hive.openBox<Task>('tasks');
+  Hive.registerAdapter<Note>(NoteAdapter());
+  boxTask = await Hive.openBox<Task>('tasks');
+  boxNote = await Hive.openBox<Note>('notes');
   // Task newTask = Task(id: DateTime.now().toString(), title: 'Default Task', createdOn: DateTime.now());
   // box.put(newTask.id, newTask);
   runApp(const MyApp());
@@ -35,6 +40,10 @@ class MyApp extends StatelessWidget {
         ), 
       ),
       home: HomeScreen(),
+      routes: {
+        NewNoteScreen.routeName:(context) => NewNoteScreen(),
+        ShowNoteScreen.routeName: (context) =>  ShowNoteScreen(),
+      },
     );
   }
 }

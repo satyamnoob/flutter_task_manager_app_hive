@@ -39,6 +39,8 @@ dependencies:
   hive:
   hive_flutter:
   path_provider:
+  shared_preferences:
+  provider:
 
 dev_dependencies:
   flutter_test:
@@ -51,6 +53,14 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.9.3
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/todolist.png" 
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -64,7 +74,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/todolist.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
