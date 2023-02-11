@@ -1,10 +1,12 @@
-# task_manager_app_hive
+# Task Manager App
 
-A new Flutter project.
+Task Manager App made using Flutter & Dart which uses Hive Database to presist your daily tasks and notes.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. Fork this repository or download the zip file.
+2. Run `flutter pub get`
+3. Run `flutter build apk --split-per-abi`
 
 A few resources to get you started if this is your first Flutter project:
 
